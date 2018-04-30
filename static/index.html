@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+<!-- 版权所有，且行且珍惜 --> 
+<script> 
+function stop(){ return false; } 
+document.oncontextmenu=stop; 
+</script> 
+  <title>Admin Page - Super radar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/openlayers@4.6.4/dist/ol.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css" />
+  <link rel="stylesheet" href="./app.css" />
+
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/openlayers"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="projection.js"></script>
+  <style type="text/css">
+<!--
+.STYLE1 {
+	color: #FF0000;
+	font-size: 14px;
+}
+.STYLE4 {
+	color: #8B0000;
+	font-size: 20px;
+}
+.GN {
+	color: #3A5FCD;
+	font-size: 18px;
+}
+.STYLE7 {font-family: "微软雅黑"}
+-->
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="sidenav" id="navBox" style="display:none;">
+      <section class="section">
+        <h1 class="title STYLE4">Admin Page - Super radar</h1>
+        <h1 class="title STYLE1">低调杀人，切勿成魔</h1>
+         <h1 class="title STYLE1">大吉大利，晚上吃鸡</h1>	  
+        <!-- <div class="field is-grouped">
+          <a class="button is-small">Button</a>
+          <a class="button is-small">Button2</a>
+        </div> -->
+        
+        <label class="label"><h1 class="title GN">地图选择:</h1></label>
+          <input type="radio" id="erangel" value="erangel" v-model="mapType"><label for="erangel"><span class="STYLE7">老图</span></label>
+          <input type="radio" id="miramar" value="miramar" v-model="mapType"><label for="miramar"><span class="STYLE7">新图</span></label>
+          <br><br>
+
+        <label class="label"><h1 class="title GN">效果设置:</h1></label>
+          <input type="checkbox" id="followme" v-model="followMe"><label for="followme"><span class="STYLE7">视角跟随</span></label>
+          <input type="checkbox" id="showbox" v-model="showBox"><label for="showbox"><span class="STYLE7">死人盒</span></label>
+          <input type="checkbox" id="showairdrop" v-model="showAirDrop"><label for="showairdrop"><span class="STYLE7">空投</span></label>
+          <input type="checkbox" id="showcar" v-model="showCar"><label for="showcar"><span class="STYLE7">载具</span></label>
+          <br><br>
+          
+        <!-- <label class="label" v-on:dblclick="showNoItems">Item Options:</label> -->
+        <label class="label"><h1 class="title GN">物资选择:</h1></label>
+          <input type="checkbox" id="showBack" v-model="showBack"><label for="showBack"><span class="STYLE7">背包</span></label>
+          <input type="checkbox" id="showArmor2" v-model="showArmor2"><label for="showArmor2"><span class="STYLE7">②级防</span></label>
+          <input type="checkbox" id="showArmor3" v-model="showArmor3"><label for="showBack3"><span class="STYLE7">③级防</span></label>
+          <input type="checkbox" id="showHead2" v-model="showHead2"><label for="showHead2"><span class="STYLE7">②级头　</span></label>
+          <input type="checkbox" id="showHead3" v-model="showHead3"><label for="showBack3"><span class="STYLE7">③级头</span></label>
+          <br><br>
+
+          <input type="checkbox" id="showFirstAid" v-model="showFirstAid"><label for="showFirstAid"><span class="STYLE7">急救包</span></label>
+          <input type="checkbox" id="showMedKit" v-model="showMedKit"><label for="showMedKit"><span class="STYLE7">医疗箱</span></label>
+          <input type="checkbox" id="showDrink" v-model="showDrink"><label for="showDrink"><span class="STYLE7">饮料</span></label>
+          <br>
+
+          <input type="checkbox" id="showGrenade" v-model="showGrenade"><label for="showGrenade"><span class="STYLE7">手雷</span></label>
+          <input type="checkbox" id="showSmokeBomb" v-model="showSmokeBomb"><label for="showSmokeBomb"><span class="STYLE7">烟雾</span></label>
+          <input type="checkbox" id="showAmmo556" v-model="showAmmo556"><label for="showAmmo556"><span class="STYLE7">5.56</span></label>
+          <input type="checkbox" id="showAmmo762" v-model="showAmmo762"><label for="showAmmo762"><span class="STYLE7">7.62</span></label>
+          <br><br>
+
+          <input type="checkbox" id="showForeGrip" v-model="showForeGrip"><label for="showForeGrip"><span class="STYLE7">握把　</span></label>
+          <input type="checkbox" id="showLowST" v-model="showLowST"><label for="showLowST"><span class="STYLE7">基础镜</span></label>
+          <input type="checkbox" id="showHighST" v-model="showHighST"><label for="showHighST"><span class="STYLE7">高倍镜</span></label>
+          <br>
+
+          <input type="checkbox" id="showARCnFH" v-model="showARCnFH"><label for="showARCnFH"><span class="STYLE7">步枪口</span></label>
+          <input type="checkbox" id="showARSuppressor" v-model="showARSuppressor"><label for="showARSuppressor"><span class="STYLE7">步消音</span></label>
+          <input type="checkbox" id="showARExtended" v-model="showARExtended"><label for="showARExtended"><span class="STYLE7">步扩容</span></label>
+          <input type="checkbox" id="showARStock" v-model="showARStock"><label for="showARStock"><span class="STYLE7">步枪托</span></label>
+          <br>
+
+          <input type="checkbox" id="showSRFlashHider" v-model="showSRFlashHider"><label for="showSRFlashHider"><span class="STYLE7">狙消焰</span></label>
+          <input type="checkbox" id="showSRSuppressor" v-model="showSRSuppressor"><label for="showSRSuppressor"><span class="STYLE7">狙消音</span></label>
+          <input type="checkbox" id="showSRExtended" v-model="showSRExtended"><label for="showSRExtended"><span class="STYLE7">狙扩容</span></label>
+          <input type="checkbox" id="showSRStock" v-model="showSRStock"><label for="showSRStock"><span class="STYLE7">狙枪托</span></label>
+          <br><br>
+
+          <input type="checkbox" id="showM16A4" v-model="showM16A4"><label for="showM16A4"><span class="STYLE7">M16</span></label>
+          <input type="checkbox" id="showSCAR" v-model="showSCAR"><label for="showSCAR"><span class="STYLE7">Scar</span></label>
+          <input type="checkbox" id="showHK416" v-model="showHK416"><label for="showHK416"><span class="STYLE7">M416</span></label>
+          <input type="checkbox" id="showAK47" v-model="showAK47"><label for="showAK47"><span class="STYLE7">Akm</span></label>
+          <br>
+
+          <input type="checkbox" id="showMini14" v-model="showMini14"><label for="showMini14"><span class="STYLE7">Mini</span></label>
+          <input type="checkbox" id="showSKS" v-model="showSKS"><label for="showSKS"><span class="STYLE7">Sks</span></label>
+          <input type="checkbox" id="showKar98k" v-model="showKar98k"><label for="showKar98k"><span class="STYLE7">98K</span></label>
+          <input type="checkbox" id="showPan" v-model="showPan"><label for="showPan"><span class="STYLE7">护菊锅</span></label>
+
+        <hr>
+        <label class="label"><h1 class="title GN">刷新率:</h1></label>
+          <a class="button is-small STYLE7" @click="setFPS(5)">【低】</a>
+          <a class="button is-small STYLE7" @click="setFPS(15)">【中】</a>
+          <a class="button is-small STYLE7" @click="setFPS(30)">【高】</a>
+          <a class="button is-small STYLE7" @click="setFPS(60)">【极高】</a>
+          <br>
+          <br>
+
+        <!-- <a class="button is-small" @click="toggleRefresh">{{ toggleButtonText }}</a>
+        <br> -->
+
+        <span><span class="STYLE7">引擎启动时间</span>: {{ gameStartTime }}</span>
+        <br>
+        <span><span class="STYLE7">累计使用时间</span>: {{ lastPacketTime }}</span>
+        <br>
+
+        <span>{{ coordinate }}</span>
+      </section>
+
+    </div>
+    <div id="map"></div>
+  </div>
+<div class="menuBox" id="menuBox"></div>
+  <script src="app.js"></script>
+  <script src="js.js"></script>
+</body>
+
+</html>
